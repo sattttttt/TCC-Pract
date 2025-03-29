@@ -1,4 +1,4 @@
-const URL = "https://backendsatt-1071529598982.us-central1.run.app/";
+const URL = "https://backendsatt-1071529598982.us-central1.run.app";
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchNotes();
