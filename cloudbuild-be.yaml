@@ -19,7 +19,7 @@ steps:
         "--timeout",
         "1000s",
         "--port",
-        "80",  # Sudah disesuaikan dari 5000 ke 80 untuk Nginx
+        "5000",  # Sudah disesuaikan dari 5000 ke 80 untuk Nginx
         "--region",
         "us-central1",
         "--allow-unauthenticated",
