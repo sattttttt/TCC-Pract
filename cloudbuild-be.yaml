@@ -16,7 +16,7 @@ steps:
       [
         "run", "deploy", "be",
         "--image", "gcr.io/$PROJECT_ID/tcc-be",
-        "--timeout", "10000s",
+        "--timeout", "3600s",
         "--port", "5000",
         "--region", "us-central1",
         "--allow-unauthenticated",
