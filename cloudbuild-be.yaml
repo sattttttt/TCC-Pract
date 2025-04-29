@@ -1,31 +1,20 @@
 steps:
-  # Build Docker image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "-f", "backend/Dockerfile", "backend"]
-    
 
-  # Push Docker image ke Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/tcc-be"]
 
-  # Deploy ke Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
-        "run",
-        "deploy",
-        "be",
-        "--image",
-        "gcr.io/$PROJECT_ID/tcc-be",
-        "--timeout",
-        "1000s",
-        "--port",
-        "5000",  # Sudah disesuaikan dari 5000 ke 80 untuk Nginx
-        "--region",
-        "us-central1",
+        "run", "deploy", "be",
+        "--image", "gcr.io/$PROJECT_ID/tcc-be",
+        "--port", "5000",  # Pastikan sesuai dengan server.js
+        "--set-env-vars", "PORT=5000",  # Force port 5000
+        "--region", "us-central1",
         "--allow-unauthenticated",
+        "--platform", "managed"
       ]
-
-# Logging hanya ke Cloud Logging
 options:
   logging: CLOUD_LOGGING_ONLY
