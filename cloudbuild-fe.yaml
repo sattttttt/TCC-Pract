@@ -6,3 +6,7 @@ steps:
     - |
       cd frontend
       gcloud app deploy
+
+
+options:
+  logging: CLOUD_LOGGING_ONLY
