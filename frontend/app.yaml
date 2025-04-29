@@ -1,2 +1,14 @@
-runtime: nodejs20
+runtime: static  # ⚠️ Wajib diganti dari nodejs20 ke static
+env: standard
 service: default
+
+handlers:
+  # Serve semua file statis (CSS, JS, gambar, dll)
+  - url: /(.*\.(js|css|png|jpg|ico|svg|json))$
+    static_files: \1
+    upload: (.*\.(js|css|png|jpg|ico|svg|json))$
+
+  # Arahkan semua URL ke index.html (untuk routing SPA)
+  - url: /.*
+    static_files: index.html
+    upload: index.html
