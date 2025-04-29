@@ -9,4 +9,6 @@ const db = new Sequelize("tcc_satt","root", "", {
     }
 });
 
+
+
 export default db;
