@@ -1,24 +1,23 @@
 steps:
-  # Build Docker image
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "-f", "Dockerfile", "."]
-    dir: "backend"  # Pastikan build dari folder backend
+    dir: "backend"
 
-  # Push Docker image
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/tcc-be"]
 
-  # Deploy to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
         "run", "deploy", "be",
         "--image", "gcr.io/$PROJECT_ID/tcc-be",
-        "--port", "5000",
-        "--set-env-vars", "PORT=5000",
-        "--region", "asia-southeast1",  # Ganti region jika perlu
+        "--port", "5000",  # Port aplikasi (tanpa set PORT env)
+        "--region", "asia-southeast1",
         "--allow-unauthenticated",
-        "--platform", "managed"
+        "--platform", "managed",
+        "--cpu", "1",
+        "--memory", "512Mi",
+        "--timeout", "3600"
       ]
 
 options:

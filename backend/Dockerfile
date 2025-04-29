@@ -2,10 +2,10 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --production
 
 COPY server.js .
 COPY routes/ ./routes/
 
-EXPOSE 5000
+EXPOSE 5000  # Hanya dokumentasi, tidak berpengaruh di Cloud Run
 CMD ["node", "server.js"]
