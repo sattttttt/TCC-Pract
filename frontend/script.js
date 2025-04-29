@@ -1,5 +1,5 @@
 //const URL = "https://backendsatt-1071529598982.us-central1.run.app/notes";
-const URL = "https://be-1071529598982.us-central1.run.app/";
+const URL = "https://be-1071529598982.us-central1.run.app/notes";
 
 document.addEventListener("DOMContentLoaded", () => {
     fetchNotes();
