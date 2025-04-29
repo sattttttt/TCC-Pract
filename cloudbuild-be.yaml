@@ -1,7 +1,8 @@
 steps:
   # Build Docker image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "."]
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "-f", "backend/Dockerfile", "backend"]
+    
 
   # Push Docker image ke Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
