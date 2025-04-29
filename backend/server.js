@@ -6,7 +6,7 @@ import Cors from "cors";
 
 const app = Express();
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5000;
 app.use(Cors());
 app.use(Express.json());
 app.use(route);
