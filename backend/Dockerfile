@@ -1,6 +1,17 @@
-FROM node:20-alpine
+FROM node:18
+
+# Set working directory
 WORKDIR /app
-COPY . .
+
+# Copy package files and install dependencies
+COPY package*.json ./
 RUN npm install
-EXPOSE 5000
+
+# Copy the rest of the app
+COPY . .
+
+# Expose the port (opsional di Cloud Run, tapi tetap baik untuk deklarasi)
+EXPOSE 8080
+
+# Jalankan aplikasi
 CMD ["node", "server.js"]
