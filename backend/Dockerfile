@@ -1,14 +1,16 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Hanya copy file yang diperlukan
+# Copy package files first for better caching
 COPY package*.json ./
 RUN npm install
 
-# Copy hanya folder backend
-COPY ./routes ./routes
+# Copy only necessary files
 COPY server.js .
-COPY ./config ./config  # Jika ada folder lain yang diperlukan
+COPY ./routes ./routes
+
+# If you need config folder, uncomment and create the folder first
+# COPY ./config ./config
 
 EXPOSE 5000
 CMD ["node", "server.js"]
