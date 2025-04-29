@@ -1,48 +1,30 @@
 steps:
-  # Membuat image dengan perintah "cloud build -t gcr.io/$PROJECT_ID/tcc-be ."
-  # Project ID akan secara otomatis terisi ketika melakukan deploy di project yg dipilih
+  # Build Docker image dari folder backend
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "."]
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "-f", "backend/Dockerfile", "backend"]
+    # Penjelasan:
+    # -f "backend/Dockerfile" → Path ke Dockerfile
+    # "backend" → Build context (folder tempat COPY di Dockerfile bekerja)
 
-  # Meng-upload/push image yg telah dibuat ke Artifact Registry
-  # Pada bagian ini, dijalankan perintah "docker push 'gcr.io/$PROJECT_ID/tcc-be'"
+  # Push image ke Artifact Registry
   - name: "gcr.io/cloud-builders/docker"
     args: ["push", "gcr.io/$PROJECT_ID/tcc-be"]
 
-  # Melakukan deploy ke cloud run menggunakan image yg telah di-upload/push pada langkah sebelumnya
-  # Pada bagian ini, dijalankan perintah sebagai berikut.
-  # "gcloud run deploy tcc-be \
-  #       --image 'gcr.io/$PROJECT_ID/tcc-be \
-  #       --timeout 1000s \
-  #       --port 5000 \
-  #       --region us-central1 \
-  #       --allow-unauthenticated' \
-  #
-  # Keterangan:
-  # "gcloud run deploy be": Perintah yang digunakan untuk mendeploy service ke cloud run dengan nama "be"
-  # "--image 'gcr.io/$PROJECT_ID/tcc-be'": Image yang akan di-deploy
-  # "--timeout 1000s": Mengatur waktu maksimum loading menjadi 1000s
-  # "--port 5000": Mengatur port yang akan digunakan (disamakan dengan port yg di-listen oleh server)
-  # "--region us-central1": Memilih us-central1 sebagai region yg akan digunakan pada cloud run
-  # "--allow-unauthenticated": Agar BE dapat diakses di mana saja tanpa memerlukan autentikasi
+  # Deploy ke Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
-        "run",
-        "deploy",
-        "be",
-        "--image",
-        "gcr.io/$PROJECT_ID/tcc-be",
-        "--timeout",
-        "1000s",
-        "--port",
-        "5000",
-        "--region",
-        "us-central1",
+        "run", "deploy", "be",
+        "--image", "gcr.io/$PROJECT_ID/tcc-be",
+        "--timeout", "1000s",
+        "--port", "5000",
+        "--region", "us-central1",
         "--allow-unauthenticated",
+        "--platform", "managed"  # Tambahkan ini untuk eksplisit
       ]
 
-# Log hanya akan disimpan di Google Cloud Logging
-# Log tidak akan disimpan di Google Cloud Storage (butuh hak akses).
+# Logging configuration
 options:
   logging: CLOUD_LOGGING_ONLY
+  # Optional: Atur machine type jika perlu
+  # machineType: "E2_HIGHCPU_8"
