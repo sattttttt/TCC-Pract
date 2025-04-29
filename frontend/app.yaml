@@ -1,18 +1,16 @@
 runtime: nodejs20
 service: default
 
-# Handler untuk static files
-handlers:
-  - url: /(.*\.(js|css|png|jpg|ico|svg|json))$
-    static_files: \1
-    upload: (.*\.(html|css|js|png|jpg|ico|svg|json))$
+# Jika ada server Node.js (Express.js)
+entrypoint: npm start
 
+handlers:
+  # Serve static files (HTML/CSS/JS)
+  - url: /(.*\.(html|css|js|png|ico))$
+    static_files: \1
+    upload: (.*\.(html|css|js|png|ico))$
+
+  # Arahkan semua rute ke index.html (jika SPA)
   - url: /.*
     static_files: index.html
     upload: index.html
-    http_headers:
-      Cache-Control: "no-cache"
-
-# Nonaktifkan instalasi otomatis dependencies (karena tidak ada server Node.js)
-skip_files:
-  - ^node_modules$
