@@ -3,6 +3,9 @@ FROM node:18
 # Set working directory
 WORKDIR /app
 
+# Pertama masuk ke folder backend
+WORKDIR /app/backend
+
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
@@ -10,7 +13,7 @@ RUN npm install
 # Copy the rest of the app
 COPY . .
 
-# Expose the port (opsional di Cloud Run, tapi tetap baik untuk deklarasi)
+# Expose port
 EXPOSE 8080
 
 # Jalankan aplikasi
