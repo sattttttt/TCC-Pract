@@ -24,6 +24,5 @@ const User = db.define('user', {
     timestamps:true
 
 }
-
 );
 export default User;
