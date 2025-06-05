@@ -10,7 +10,9 @@ const Note = db.define('notes', {
     notesContent: {
         type: Sequelize.STRING,
         allowNull: false
-    }
+    },
+    
+
 }, {
     freezeTableName: true,
     timestamps:true
@@ -19,10 +21,5 @@ const Note = db.define('notes', {
 
 );
 
-db.sync().then(() => {
-    console.log('table created');
-}).catch((err) => {
-    console.log(err);
-});
 
 export default Note;

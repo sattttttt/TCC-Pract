@@ -98,18 +98,56 @@ const loginUsers = async (req, res) => {
 
 const logoutUsers = async (req, res) => {
     try {
+        console.log("🍪 Checking cookies:", req.cookies);
+
         const refreshToken = req.cookies.refreshToken;
-        if(!refreshToken) return res.status(401).json({success: false, message: "refreshToken not found"});
-        const user = await User.findOne({where: {refresh_token: refreshToken}});
-        if(!user.refresh_token) return res.status(401).json({success: false, message: "User not found"});
+        if (!refreshToken) {
+            console.warn("⚠️ No refreshToken found in cookies");
+            return res.status(401).json({
+                success: false,
+                message: "refreshToken not found in cookies",
+            });
+        }
+
+        const user = await User.findOne({ where: { refresh_token: refreshToken } });
+
+        if (!user) {
+            console.warn("⚠️ User not found with that refreshToken");
+            return res.status(401).json({
+                success: false,
+                message: "User with given refreshToken not found",
+            });
+        }
+
+        if (!user.refresh_token) {
+            console.warn("⚠️ User exists but has no refresh_token stored");
+            return res.status(401).json({
+                success: false,
+                message: "User does not have refresh token in DB",
+            });
+        }
+
         const userId = user.id;
-        await User.update({refresh_token: null}, {where: {id: userId}});
+
+        await User.update({ refresh_token: null }, { where: { id: userId } });
         res.clearCookie("refreshToken");
-        res.status(200).json({success: true, message: "User Logged Out Successfully"});
+        console.log("✅ Logout successful for user ID:", userId);
+
+        res.status(200).json({
+            success: true,
+            message: "User Logged Out Successfully"
+        });
+
     } catch (error) {
-        res.status(500).json({success: false, message: "Failed to logout user", error});
+        console.error("❌ Logout error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to logout user",
+            error: error.message,
+        });
     }
-}
+};
+
 
 
 export { registerUsers, loginUsers, logoutUsers };

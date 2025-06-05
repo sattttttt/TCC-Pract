@@ -1,7 +1,7 @@
 import Express from "express";
 import route from "./routes/route.js";
 import Cors from "cors";
-import db from "./config/database.js";
+import {db} from "./model/index.js";
 import userRoute from "./routes/userRoute.js";
 import cookieParser from "cookie-parser";
 
@@ -19,7 +19,7 @@ app.use(Express.json());
 app.use("/user", userRoute);
 app.use("/notes", route);
 
-db.sync({alter: true}).then(() => {
+db.sync({force: true}).then(() => {
     console.log("table created");
 }).catch((error) => {
     console.log("error creating table", error)
