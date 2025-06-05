@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login & Register</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      .auth-container {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      input {
+        margin-bottom: 15px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+      }
+
+      .password-wrapper {
+        position: relative;
+      }
+
+      .password-toggle-icon {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        cursor: pointer;
+        color: #666;
+      }
+
+      button {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      #toggle-text {
+        text-align: center;
+        margin-top: 10px;
+      }
+
+      #toggle-text span {
+        color: #007bff;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <h2 id="form-title">Login</h2>
+
+      <!-- Login Form -->
+      <form id="loginForm" class="active" novalidate>
+        <input type="email" id="loginEmail" placeholder="Email" required />
+        <div class="password-wrapper">
+          <input type="password" id="loginPassword" placeholder="Password" required />
+          <span id="toggleLoginPassword" class="password-toggle-icon" title="Show/Hide Password">👁️</span>
+        </div>
+        <button type="submit">Login</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" novalidate style="display: none">
+        <input type="text" id="regName" placeholder="Name" required />
+        <input type="email" id="regEmail" placeholder="Email" required />
+        <div class="password-wrapper">
+          <input type="password" id="regPassword" placeholder="Password" required />
+          <span id="toggleRegPassword" class="password-toggle-icon" title="Show/Hide Password">👁️</span>
+        </div>
+        <button type="submit">Register</button>
+      </form>
+
+      <p id="toggle-text">
+        Don't have an account? <span id="toggle-btn">Sign Up</span>
+      </p>
+    </div>
+
+    <script>
+      // Ganti dengan URL API milikmu
+      const BASE_URL = "https://be-1071529598982.asia-southeast1.run.app/user";
+
+      const loginForm = document.getElementById("loginForm");
+      const registerForm = document.getElementById("registerForm");
+      const toggleText = document.getElementById("toggle-text");
+      const formTitle = document.getElementById("form-title");
+
+      function toggleForms() {
+        const isLogin = loginForm.style.display !== "none";
+        loginForm.style.display = isLogin ? "none" : "block";
+        registerForm.style.display = isLogin ? "block" : "none";
+        formTitle.textContent = isLogin ? "Register" : "Login";
+        toggleText.innerHTML = isLogin
+          ? 'Have an account? <span id="toggle-btn">Sign In</span>'
+          : 'Don\'t have an account? <span id="toggle-btn">Sign Up</span>';
+        document
+          .getElementById("toggle-btn")
+          .addEventListener("click", toggleForms);
+      }
+
+      document
+        .getElementById("toggle-btn")
+        .addEventListener("click", toggleForms);
+
+      function setupTogglePassword(iconId, inputId) {
+        const icon = document.getElementById(iconId);
+        const input = document.getElementById(inputId);
+        icon.addEventListener("click", () => {
+          input.type = input.type === "password" ? "text" : "password";
+          icon.style.color = input.type === "text" ? "#0056b3" : "#666";
+        });
+      }
+
+      setupTogglePassword("toggleLoginPassword", "loginPassword");
+      setupTogglePassword("toggleRegPassword", "regPassword");
+
+      loginForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value;
+
+        if (!email || !password) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${BASE_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            localStorage.setItem("accessToken", data.accessToken);
+            alert("Login berhasil!");
+            window.location.href = "index.html";
+          } else {
+            alert(data.message || "Login gagal");
+          }
+        } catch (error) {
+          alert("Terjadi kesalahan saat login.");
+          console.error(error);
+        }
+      });
+
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const name = document.getElementById("regName").value.trim();
+        const email = document.getElementById("regEmail").value.trim();
+        const password = document.getElementById("regPassword").value;
+
+        if (!name || !email || !password) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        // Validasi email sederhana
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          alert("Format email tidak valid.");
+          return;
+        }
+
+        if (password.length < 6) {
+          alert("Password minimal 6 karakter.");
+          return;
+        }
+
+        try {
+          const res = await fetch(`${BASE_URL}/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, password }),
+          });
+          const data = await res.json();
+
+          alert(data.message || "Registrasi berhasil.");
+          if (res.ok) {
+            toggleForms();
+            setTimeout(() => {
+              alert("Silakan login dengan akun baru Anda.");
+            }, 300);
+          }
+        } catch (error) {
+          alert("Terjadi kesalahan saat registrasi.");
+          console.error(error);
+        }
+      });
+    </script>
+  </body>
+</html>
