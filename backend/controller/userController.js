@@ -67,7 +67,7 @@ const loginUsers = async (req, res) => {
         })
     }
     try {
-        const user = await Users.findOne({ where: { email: email } })
+        const user = await User.findOne({ where: { email: email } })
         if (user) {
             const userPlain = user.toJSON();
             const { password: _, refresh_token: __, ...SafeUserData } = userPlain;
@@ -100,7 +100,7 @@ const logoutUsers = async (req, res) => {
     try {
         const refreshToken = req.cookies.refreshToken;
         if(!refreshToken) return res.status(401).json({success: false, message: "refreshToken not found"});
-        const user = await Users.findOne({where: {refresh_token: refreshToken}});
+        const user = await User.findOne({where: {refresh_token: refreshToken}});
         if(!user.refresh_token) return res.status(401).json({success: false, message: "User not found"});
         const userId = user.id;
         await Users.update({refresh_token: null}, {where: {id: userId}});
