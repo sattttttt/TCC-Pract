@@ -3,6 +3,7 @@ import route from "./routes/route.js";
 import Cors from "cors";
 import db from "./config/database.js";
 import userRoute from "./routes/userRoute.js";
+import cookieParser from "cookie-parser";
 
 const app = Express();
 const PORT = process.env.PORT || 5000;
@@ -13,6 +14,7 @@ process.on('uncaughtException', (err) => {
 });
 
 app.use(Cors());
+app.use(cookieParser());
 app.use(Express.json());
 app.use("/user", userRoute);
 app.use("/notes", route);
