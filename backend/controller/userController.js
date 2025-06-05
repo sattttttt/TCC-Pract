@@ -75,7 +75,7 @@ const loginUsers = async (req, res) => {
             if (isPasswordMatch) {
                 const accessToken = generateAccessToken(user);
                 const refreshToken = generateRefreshToken(user);
-                await Users.update({ refresh_token: refreshToken }, { where: { id: user.id } });
+                await User.update({ refresh_token: refreshToken }, { where: { id: user.id } });
                  res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: true,
@@ -103,7 +103,7 @@ const logoutUsers = async (req, res) => {
         const user = await User.findOne({where: {refresh_token: refreshToken}});
         if(!user.refresh_token) return res.status(401).json({success: false, message: "User not found"});
         const userId = user.id;
-        await Users.update({refresh_token: null}, {where: {id: userId}});
+        await User.update({refresh_token: null}, {where: {id: userId}});
         res.clearCookie("refreshToken");
         res.status(200).json({success: true, message: "User Logged Out Successfully"});
     } catch (error) {
