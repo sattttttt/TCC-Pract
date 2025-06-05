@@ -5,7 +5,6 @@ import { getAccessToken } from "../controller/tokenController.js";
 const router = Express.Router();
 
 router.get("/getAccessToken", getAccessToken);
-
 router.post("/register", registerUsers);
 router.post("/login", loginUsers);
 router.post("/logout", logoutUsers);
