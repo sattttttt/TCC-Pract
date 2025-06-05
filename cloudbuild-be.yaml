@@ -1,4 +1,10 @@
+substitutions: 
+ _ENV: gs://h-03-451207.appspot.com/notes/.env
+
 steps:
+  - name: "gcr.io/cloud-builders/gsutil"
+    args: ["cp", "${_ENV}", "backend/.env"]
+    
   - name: "gcr.io/cloud-builders/docker"
     args: ["build", "-t", "gcr.io/$PROJECT_ID/tcc-be", "-f", "backend/Dockerfile", "backend"]
 
